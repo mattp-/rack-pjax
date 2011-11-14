@@ -12,11 +12,11 @@ module Rack
       status, headers, body = @app.call(env)
       headers = HeaderHash.new(headers)
 
-      if pjax?(env)
+      if container = pjax?(env)
         new_body = ""
         body.each do |b|
           parsed_body = Hpricot(b)
-          container = parsed_body.at("[@data-pjax-container]")
+          container = parsed_body.at(container)
           if container
             children = container.children
             title = parsed_body.at("title")
@@ -39,7 +39,8 @@ module Rack
 
     protected
       def pjax?(env)
-        env['HTTP_X_PJAX']
+        # try and turn the expected [foo] into an XPath
+        env['HTTP_X_PJAX'].sub(/^\[/, '[@')
       end
   end
 end
