@@ -39,8 +39,13 @@ module Rack
 
     protected
       def pjax?(env)
-        # try and turn the expected [foo] into an XPath
-        env['HTTP_X_PJAX'].sub(/^\[/, '[@')
+        # if default header is passed, just return default xpath
+        if env['HTTP_X_PJAX'] == 'true' || env['HTTP_X_PJAX'] == 1
+            return '[@data-pjax-container]'
+        elsif env['HTTP_X_PJAX'] =~ /^[_\-\w]+$/
+            # try and turn the expected [foo] into an xpatch
+            return "[@#{env['HTTP_X_PJAX']}]"
+        end
       end
   end
 end
