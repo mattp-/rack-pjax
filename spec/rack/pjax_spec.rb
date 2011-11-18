@@ -84,4 +84,21 @@ BODY
       headers['Content-Length'].should == Rack::Utils.bytesize(body).to_s
     end
   end
+
+  context "a pjaxified app, upon receiving a custom-pjax xpath request" do
+    before do
+      self.class.app = generate_app(:body => '<html><title>Hello</title><body><div data-foo-container>World!</div></body></html>')
+    end
+
+    it "should return the original body" do
+      get "/", {}, {"HTTP_X_PJAX" => "data-foo-container"}
+      body.should == '<title>Hello</title>World!'
+    end
+
+    it "should return the correct Content Length" do
+      get "/"
+      headers['Content-Length'].should == Rack::Utils.bytesize(body).to_s
+    end
+  end
+
 end
