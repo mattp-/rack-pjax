@@ -39,12 +39,12 @@ module Rack
 
     protected
       def pjax?(env)
-        # if default header is passed, just return default xpath
-        if env['HTTP_X_PJAX'] == 'true' || env['HTTP_X_PJAX'] == 1
+        # passed in container header tells us what xpath to return
+        if env['HTTP_X_PJAX_CONTAINER'] && env['HTTP_X_PJAX']
+            return "[@#{ env['HTTP_X_PJAX_CONTAINER'][1..-2] }]"
+        # default is passed, just return default xpath
+        elsif env['HTTP_X_PJAX']
             return '[@data-pjax-container]'
-        elsif env['HTTP_X_PJAX'] =~ /^[_\-\w]+$/
-            # try and turn the expected [foo] into an xpatch
-            return "[@#{env['HTTP_X_PJAX']}]"
         end
       end
   end

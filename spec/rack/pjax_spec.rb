@@ -91,7 +91,7 @@ BODY
     end
 
     it "should return the original body" do
-      get "/", {}, {"HTTP_X_PJAX" => "data-foo-container"}
+      get "/", {}, {"HTTP_X_PJAX" => 'true', "HTTP_X_PJAX_CONTAINER" => "[data-foo-container]"}
       body.should == '<title>Hello</title>World!'
     end
 
